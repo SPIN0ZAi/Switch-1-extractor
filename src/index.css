@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/SpaceGrotesk.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg-canvas: #090C11;
+  --bg-sidebar: #0E131C;
+  --bg-card: #141B26;
+  --bg-card-hover: #1A2332;
+  --bg-input: #121822;
+  --border-subtle: #222E42;
+  --border-hover: #2F3E58;
+
+  --accent-coral: #FF3B53;
+  --accent-coral-hover: #FF5A6E;
+  --accent-coral-muted: rgba(255, 59, 83, 0.15);
+
+  --accent-cyan: #00E5FF;
+  --accent-cyan-hover: #33EBFF;
+  --accent-cyan-muted: rgba(0, 229, 255, 0.15);
+
+  --text-main: #F0F4F8;
+  --text-muted: #8B9BB4;
+  --text-subtle: #53637D;
+
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --status-error: #EF4444;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme='light'] {
+  --bg-canvas: #F4F6F9;
+  --bg-sidebar: #E9EDF3;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --bg-input: #F1F4F9;
+  --border-subtle: #D8E0EC;
+  --border-hover: #B8C5D8;
+
+  --accent-coral: #E62E44;
+  --accent-coral-hover: #D42036;
+  --accent-coral-muted: rgba(230, 46, 68, 0.12);
+
+  --accent-cyan: #0099B8;
+  --accent-cyan-hover: #00829E;
+  --accent-cyan-muted: rgba(0, 153, 184, 0.12);
+
+  --text-main: #0F172A;
+  --text-muted: #475569;
+  --text-subtle: #94A3B8;
+
+  --status-success: #059669;
+  --status-warning: #D97706;
+  --status-error: #DC2626;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  user-select: none;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-nodrag {
+  -webkit-app-region: no-drag;
+}
+

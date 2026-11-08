@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Extractor | High-Performance Native Desktop Tool for Windows</title>
+    <meta name="description" content="Ultra-fast, native 64-bit Windows GUI extractor for Nintendo Switch 1 container archives (.NSP, .NSZ, .XCI, .XCZ, .NCA, RomFS, ExeFS). Pure Rust engine, AES-NI acceleration, and BKTR delta patch merging.">
+    
+    <!-- Open Graph / Meta -->
+    <meta property="og:title" content="Switch Extractor - Native Nintendo Switch Archive Tool">
+    <meta property="og:description" content="Pure Rust native Windows desktop app to decrypt, inspect, and extract Switch 1 game packages, updates, and DLCs.">
+    <meta property="og:image" content="pictures/extractor-main-UI.png">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="app_icon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Sticky Navigation -->
+    <nav class="navbar">
+        <a href="#" class="brand">
+            <div class="joycon-logo">
+                <div class="joycon-left"></div>
+                <div class="joycon-right"></div>
+            </div>
+            <span class="brand-title">SWITCH <span>EXTRACTOR</span></span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#features" class="nav-link">Features</a></li>
+            <li><a href="#architecture" class="nav-link">Architecture</a></li>
+            <li><a href="#multi-slot" class="nav-link">Base + Update + DLCs</a></li>
+            <li><a href="#download" class="nav-link">Download</a></li>
+            <li>
+                <a href="https://github.com/SPIN0ZAi/Switch-1-extractor" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="badge-pill">
+            <span class="badge-dot"></span> v1.0.0 &bull; Pure Rust Backend &bull; Single Standalone .exe
+        </div>
+        <h1>
+            Ultra-Fast <span class="gradient-text">Nintendo Switch 1</span><br>
+            Archive &amp; Package Extractor
+        </h1>
+        <p>
+            An open-source, hardware-accelerated desktop utility to inspect, decrypt, and extract <code>.nsp</code>, <code>.nsz</code>, <code>.xci</code>, <code>.xcz</code>, and <code>.nca</code> containers with on-the-fly BKTR delta update merging and structured DLC unpacking.
+        </p>
+
+        <div class="hero-cta" id="download">
+            <a href="https://github.com/SPIN0ZAi/Switch-1-extractor/releases/latest" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Switch_Extractor.exe
+            </a>
+            <a href="https://github.com/SPIN0ZAi/Switch-1-extractor" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                GitHub Repository
+            </a>
+            <a href="https://github.com/SPIN0ZAi/Switch-1-extractor/releases/latest" class="btn btn-cyan">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Download ZIP Bundle
+            </a>
+        </div>
+
+        <div class="hero-image-wrapper">
+            <img src="pictures/extractor-main-UI.png" alt="Switch Extractor Main Interface" class="hero-image">
+        </div>
+    </header>
+
+    <!-- Metrics Row -->
+    <div class="metrics-section">
+        <div class="metric-card">
+            <div class="metric-value red">6.95 MB</div>
+            <div class="metric-label">Single Standalone .EXE</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value cyan">&lt; 0.5s</div>
+            <div class="metric-label">Instant Cold Startup</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">~42 MB</div>
+            <div class="metric-label">Idle Memory Footprint</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value red">0%</div>
+            <div class="metric-label">Python Dependencies</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value cyan">60 FPS</div>
+            <div class="metric-label">Non-Blocking Tokio UI</div>
+        </div>
+    </div>
+
+    <!-- Key Features Section -->
+    <section class="section" id="features">
+        <div class="section-header">
+            <div class="section-tag">Performance &amp; Precision</div>
+            <h2 class="section-title">Engineered for Complete Game Archival</h2>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <h3>Hardware AES Acceleration</h3>
+                <p>AES-NI hardware-accelerated AES-128-XTS header decryption and AES-128-CTR sector streaming for maximum multi-gigabyte throughput.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon cyan">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                </div>
+                <h3>BKTR Delta RomFS Relocation</h3>
+                <p>Seamlessly merges Game Updates with Base Game packages on-the-fly. Relocation bucket trees decrypt and layer patch blocks without modifying source files.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                </div>
+                <h3>Multi-Slot Base + Update + DLCs</h3>
+                <p>Simultaneously select Base Game, Game Update, and multiple DLC packages. DLC contents extract into organized, isolated RomFS trees.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon cyan">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                </div>
+                <h3>In-Place Atomic Self-Updater</h3>
+                <p>Queries GitHub Releases API, shows changelogs with live MB/s download progress, and atomically swaps the running executable on Windows without locking.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3>All Nintendo Switch Formats</h3>
+                <p>Full support for <code>.NSP</code> (PFS0), <code>.NSZ</code> (Zstandard), <code>.XCI</code> (HFS0 GameCards), <code>.XCZ</code>, and standalone <code>.NCA</code> archives.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon cyan">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Automatic Keys Discovery</h3>
+                <p>Automatically discovers and parses <code>prod.keys</code> and <code>title.keys</code> from Yuzu and Ryujinx system directories, or custom key paths.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="section" id="architecture">
+        <div class="section-header">
+            <div class="section-tag">Architecture &amp; Benchmarks</div>
+            <h2 class="section-title">Why Native Rust &amp; Tauri v2?</h2>
+        </div>
+
+        <div class="arch-box">
+            <p>
+                Unlike legacy Python scripts or memory-heavy Electron wrappers, Switch Extractor is built with a pure Rust cryptographic engine (`switch-extractor-core`) and Tauri v2. All decryption, relocation mapping, and file unpackers execute on Tokio worker threads with zero UI freezing.
+            </p>
+
+            <table class="arch-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Switch Extractor Desktop</th>
+                        <th>Typical Electron App</th>
+                        <th>Legacy Python CLI/Tkinter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Distribution</strong></td>
+                        <td><strong>1 Standalone .exe (6.95 MB)</strong></td>
+                        <td>Installer / 150+ MB bundle</td>
+                        <td>Requires Python &amp; pip packages</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cold Launch</strong></td>
+                        <td><strong>&lt; 0.5 seconds</strong></td>
+                        <td>3 – 6 seconds</td>
+                        <td>2 – 4 seconds</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Idle RAM</strong></td>
+                        <td><strong>~42 MB</strong></td>
+                        <td>200 – 450 MB</td>
+                        <td>~80 MB</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Console Window</strong></td>
+                        <td><strong>None (Clean WinExe)</strong></td>
+                        <td>None</td>
+                        <td>Black CMD prompt window</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BKTR Patching</strong></td>
+                        <td><strong>Native Rust on-the-fly</strong></td>
+                        <td>External tool bridge</td>
+                        <td>External hacks</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            &copy; 2026 Switch Extractor &bull; Built with Rust &amp; Tauri v2 &bull; Released under the <a href="https://github.com/SPIN0ZAi/Switch-1-extractor/blob/main/LICENSE">MIT License</a>.
+        </p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #475569;">
+            This is an independent clean-room archive extraction utility. It contains no proprietary Nintendo code or encryption keys.
+        </p>
+    </footer>
+
+</body>
+</html>

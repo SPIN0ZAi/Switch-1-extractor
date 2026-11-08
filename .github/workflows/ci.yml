@@ -1,0 +1,47 @@
+name: CI Verification (Build & Test)
+
+on:
+  pull_request:
+    branches: [ "develop", "main" ]
+  push:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Build, Test & Package Verification
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Setup Rust Toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: x86_64-pc-windows-msvc
+
+    - name: Rust Cache
+      uses: swatinem/rust-cache@v2
+
+    - name: Install Frontend Dependencies
+      run: npm install
+
+    - name: Run Core Test Suite (8 Rust Tests)
+      run: cargo test --manifest-path crates/switch-extractor-core/Cargo.toml --verbose
+
+    - name: Verify Frontend Compilation & TypeScript
+      run: npm run build
+
+    - name: Verify Standalone Tauri Build
+      run: npm run tauri build -- --no-bundle

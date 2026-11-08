@@ -1,0 +1,29 @@
+name: 📋 Engineering Task
+description: Track an engineering, refactoring, or infrastructure task on the Kanban board
+title: "[TASK]: "
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to break down engineering work items for the Kanban board.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Objective & Scope
+      description: What is the goal of this task and why is it needed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: Acceptance Criteria / Checklist
+      description: What criteria must be met before this task is marked Done?
+      value: |
+        - [ ] Feature implementation completed
+        - [ ] Unit tests added & passing
+        - [ ] Build & packaging verified locally
+    validations:
+      required: true
