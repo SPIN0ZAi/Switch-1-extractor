@@ -15,6 +15,10 @@ pub struct KeySet {
 }
 
 impl KeySet {
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
     pub fn auto_load() -> Self {
         Self::new()
     }
@@ -108,22 +112,25 @@ impl KeySet {
         }
     }
 
-    fn parse_prod_keys(&mut self, path: &Path) {
-        if let Ok(file) = File::open(path) {
-            let reader = BufReader::new(file);
-            for line in reader.lines().map_while(std::result::Result::ok) {
-                let trimmed = line.trim();
-                if trimmed.is_empty() || trimmed.starts_with('#') || trimmed.starts_with(';') {
-                    continue;
-                }
-                if let Some((k, v)) = trimmed.split_once('=') {
-                    let key_name = k.trim().to_lowercase();
-                    let hex_val: String = v.chars().filter(|c| c.is_ascii_hexdigit()).collect();
-                    if let Ok(bytes) = hex::decode(&hex_val) {
-                        self.keys.insert(key_name, bytes);
-                    }
+    pub fn parse_text(&mut self, text: &str) {
+        for line in text.lines() {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with('#') || trimmed.starts_with(';') {
+                continue;
+            }
+            if let Some((k, v)) = trimmed.split_once('=') {
+                let key_name = k.trim().to_lowercase();
+                let hex_val: String = v.chars().filter(|c| c.is_ascii_hexdigit()).collect();
+                if let Ok(bytes) = hex::decode(&hex_val) {
+                    self.keys.insert(key_name, bytes);
                 }
             }
+        }
+    }
+
+    fn parse_prod_keys(&mut self, path: &Path) {
+        if let Ok(text) = std::fs::read_to_string(path) {
+            self.parse_text(&text);
         }
     }
 
