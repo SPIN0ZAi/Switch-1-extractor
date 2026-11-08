@@ -19,6 +19,8 @@ release_body.md
 *.zip
 *.old
 *.tmp
+Switch_Extractor.exe
+downloaded_Switch_Extractor.exe
 
 # Nintendo Cryptographic Keys (NEVER commit keys!)
 *.keys
