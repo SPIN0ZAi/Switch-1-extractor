@@ -1,0 +1,53 @@
+# Rust & Cargo
+target/
+**/target/
+**/*.rs.bk
+*.pdb
+
+# Node & Frontend
+node_modules/
+dist/assets/
+dist_verify/
+dist_release/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Release packaging
+release_assets/
+release_body.md
+*.zip
+*.old
+*.tmp
+
+# Nintendo Cryptographic Keys (NEVER commit keys!)
+*.keys
+keys/
+prod.keys
+title.keys
+dev.keys
+
+# Python & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+extracted/
+venv/
+.env
+
+# Windows OS Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE & Editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace

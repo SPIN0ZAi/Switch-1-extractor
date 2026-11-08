@@ -1,0 +1,91 @@
+name: 🐛 Bug Report
+description: Report an issue, extraction failure, or unexpected behavior
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug report! Please provide as much detail as possible to help reproduce and resolve it quickly.
+
+  - type: input
+    id: game_name
+    attributes:
+      label: Game / Title Name
+      description: Name of the Switch title or backup dump being extracted (e.g. Super Mario Odyssey, Bayonetta 3).
+      placeholder: "e.g., Super Mario Odyssey"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: format
+    attributes:
+      label: Container / File Format
+      description: What format is the target file?
+      options:
+        - ".NSP (Nintendo Submission Package)"
+        - ".NSZ (Compressed NSP)"
+        - ".XCI (GameCard Image)"
+        - ".XCZ (Compressed GameCard)"
+        - ".NCA (Nintendo Content Archive)"
+        - "RomFS / ExeFS Stream"
+        - "Other / Multiple"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: extraction_mode
+    attributes:
+      label: Extraction Mode
+      description: Which slot / mode was being executed?
+      options:
+        - "Base Game Only"
+        - "Base Game + Update (BKTR Delta Merge)"
+        - "Base Game + Update + DLCs"
+        - "DLC Package Only"
+        - "Batch Extraction"
+        - "XCI to NSP Conversion"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what happened and what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: error_log
+    attributes:
+      label: Error Log / Activity Output
+      description: Paste any error messages from the in-app Activity Log or console.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions on how to trigger the bug.
+      value: |
+        1. Launch Switch Extractor
+        2. Select Base Game '...'
+        3. Select Update/DLC '...'
+        4. Click 'Start Extraction'
+        5. See error '...'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os_version
+    attributes:
+      label: Operating System
+      options:
+        - Windows 11 (x64)
+        - Windows 10 (x64)
+        - Other
+    validations:
+      required: true

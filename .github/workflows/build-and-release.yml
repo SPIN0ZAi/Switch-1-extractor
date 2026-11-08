@@ -1,0 +1,188 @@
+name: Build & Release Switch Extractor
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Setup Rust Toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: x86_64-pc-windows-msvc
+
+    - name: Rust Cache
+      uses: swatinem/rust-cache@v2
+
+    - name: Determine Release Tag (Auto-Increment)
+      id: tag_version
+      shell: pwsh
+      run: |
+        git fetch --tags --force
+        
+        if ("${{ github.ref }}" -like "refs/tags/v*") {
+            $tag = "${{ github.ref_name }}"
+            $rawVer = $tag.TrimStart('v')
+            Write-Host "Triggered by explicit tag push: $tag"
+        } else {
+            # Find all existing tags matching semantic version vX.Y.Z
+            $tags = git tag -l "v*"
+            $maxMajor = 1
+            $maxMinor = 0
+            $maxPatch = 0
+            
+            foreach ($t in $tags) {
+                if ($t -match '^v?(\d+)\.(\d+)\.(\d+)$') {
+                    $maj = [int]$Matches[1]
+                    $min = [int]$Matches[2]
+                    $pat = [int]$Matches[3]
+                    
+                    if ($maj -gt $maxMajor) {
+                        $maxMajor = $maj
+                        $maxMinor = $min
+                        $maxPatch = $pat
+                    } elseif ($maj -eq $maxMajor -and $min -gt $maxMinor) {
+                        $maxMinor = $min
+                        $maxPatch = $pat
+                    } elseif ($maj -eq $maxMajor -and $min -eq $maxMinor -and $pat -gt $maxPatch) {
+                        $maxPatch = $pat
+                    }
+                }
+            }
+            
+            # Increment patch version automatically (v1.0.0 -> v1.0.1, etc.)
+            $nextPatch = $maxPatch + 1
+            $tag = "v$maxMajor.$maxMinor.$nextPatch"
+            $rawVer = "$maxMajor.$maxMinor.$nextPatch"
+            Write-Host "Auto-incremented release tag from latest (v$maxMajor.$maxMinor.$maxPatch) to: $tag (Version: $rawVer)"
+        }
+        
+        "RELEASE_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "RELEASE_VERSION=$rawVer" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+    - name: Install Frontend Dependencies
+      run: npm install
+
+    - name: Run Core Test Suite (8 Rust Tests)
+      run: cargo test --manifest-path crates/switch-extractor-core/Cargo.toml --verbose
+
+    - name: Sync Version Numbers
+      shell: pwsh
+      run: |
+        $ver = "${{ env.RELEASE_VERSION }}"
+        Write-Host "Syncing version to $ver across manifests..."
+        
+        # package.json
+        (Get-Content package.json) -replace '"version": ".*?"', ('"version": "' + $ver + '"') | Set-Content package.json
+        
+        # src-tauri/Cargo.toml
+        (Get-Content src-tauri/Cargo.toml) -replace '^version = ".*?"', ('version = "' + $ver + '"') | Set-Content src-tauri/Cargo.toml
+        
+        # src-tauri/tauri.conf.json
+        (Get-Content src-tauri/tauri.conf.json) -replace '"version": ".*?"', ('"version": "' + $ver + '"') | Set-Content src-tauri/tauri.conf.json
+
+    - name: Compile Standalone Executable (Tauri v2)
+      run: npm run tauri build -- --no-bundle
+
+    - name: Package Release Assets
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force release_assets
+        
+        # Copy compiled binary
+        Copy-Item src-tauri/target/release/switch-extractor-desktop.exe release_assets/Switch_Extractor.exe
+        Copy-Item README.md release_assets/
+        Copy-Item LICENSE release_assets/
+        
+        # Create ZIP bundle
+        Compress-Archive -Path release_assets/* -DestinationPath release_assets/Switch_Extractor-windows-x64.zip
+        
+        # Compute SHA-256 Checksums
+        $hashExe = (Get-FileHash release_assets/Switch_Extractor.exe -Algorithm SHA256).Hash
+        $hashZip = (Get-FileHash release_assets/Switch_Extractor-windows-x64.zip -Algorithm SHA256).Hash
+        
+        @("$hashExe  Switch_Extractor.exe", "$hashZip  Switch_Extractor-windows-x64.zip") | Out-File -Encoding utf8 release_assets/SHA256SUMS.txt
+        Write-Host "Generated SHA-256 Checksums"
+        
+        # Compose Formatted Release Notes
+        $body = @"
+        # 🚀 Switch Extractor ${{ env.RELEASE_TAG }}
+
+        **Switch Extractor** is a high-performance, native 64-bit Windows desktop tool for inspecting, browsing, verifying, and extracting Nintendo Switch 1 container archives (`.nsp`, `.nsz`, `.xci`, `.xcz`, `.nca`) shipped as **ONE standalone `.exe`**.
+
+        ---
+
+        ### ✨ Key Features in this Release
+        - **🎮 Standalone Windows Desktop App (`WinExe`)**: Launches directly with **zero command prompt/cmd window** popping up.
+        - **⚡ Native Rust Engine**: Hardware-accelerated AES-NI cryptography, zero Python runtime, and fluid 60 FPS UI on background Tokio tasks.
+        - **🧩 Multi-Slot Base Game + Update + DLCs**:
+          - Dedicated slots for Base Game, Game Update, and multiple DLC packages.
+          - Automated Title ID variant detection and 1-click package pairing.
+        - **🏎️ BKTR Delta RomFS Relocation & Merging**: Automatically layers game update patch buckets onto base game RomFS trees without modifying original files.
+        - **📦 DLC Content Extraction**: Multi-select DLC packages extracted into structured subdirectories (`dlc/DLC_XX_<id>/romfs/`).
+        - **🔄 Built-in In-Place Auto-Updater**: Real-time update check via GitHub Releases, streaming download progress, and atomic executable replacement.
+        - **🛡️ Direct XCI ➔ NSP Conversion**: Streamed GameCard repacking with zero temporary disk usage.
+        - **🧪 Automated Test Suite**: 8/8 comprehensive cryptographic and format unit tests passing.
+
+        ---
+
+        ### 📥 Download & Installation
+        1. Download **`Switch_Extractor.exe`** (standalone) or **`Switch_Extractor-windows-x64.zip`** from Assets below.
+        2. Double-click **`Switch_Extractor.exe`** to launch!
+        > *Note: Uses Microsoft Edge WebView2 runtime (pre-installed on Windows 10/11).*
+
+        ---
+
+        ### 🔒 Checksums & File Verification
+        | File | SHA-256 Checksum |
+        | :--- | :--- |
+        | `Switch_Extractor.exe` | `$hashExe` |
+        | `Switch_Extractor-windows-x64.zip` | `$hashZip` |
+
+        ---
+
+        ### 📄 Clean-Room & Legal Disclaimer
+        This is an independent clean-room archive extraction and interoperability utility. It contains no proprietary Nintendo code, copyrighted game assets, or pre-packaged encryption keys (`prod.keys`). Users must provide their own dumped keys for personal backup verification.
+        "@
+
+        $body | Out-File -FilePath release_body.md -Encoding utf8
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Switch_Extractor-Windows-x64
+        path: release_assets/Switch_Extractor-windows-x64.zip
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.RELEASE_TAG }}
+        name: Switch Extractor ${{ env.RELEASE_TAG }}
+        body_path: release_body.md
+        files: |
+          release_assets/Switch_Extractor.exe
+          release_assets/Switch_Extractor-windows-x64.zip
+          release_assets/SHA256SUMS.txt
+        draft: false
+        prerelease: false
+        generate_release_notes: true
