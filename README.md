@@ -31,7 +31,15 @@
 <p align="center">
   <img src="pictures/extractor-main-UI.png" alt="Switch Extractor Main UI" width="95%">
   <br>
-  <em>Extraction Workspace — Dedicated Base Game, Game Update (BKTR Delta), and Multi-DLC slots with auto-matching, live decryption progress, and hardware stats.</em>
+  <em>Extraction Workspace — Dedicated Base Game, Game Update (BKTR Delta), and Multi-DLC slots with auto-matching, live metadata, and hardware stats.</em>
+</p>
+
+<br>
+
+<p align="center">
+  <img src="pictures/extractor-empty-UI.png" alt="Switch Extractor Empty Dropzone" width="95%">
+  <br>
+  <em>Clean Workspace — High-contrast Joy-Con OLED theme with dedicated drag-and-drop slots.</em>
 </p>
 
 ---
