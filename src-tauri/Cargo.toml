@@ -2,7 +2,7 @@
 name = "switch-extractor-desktop"
 version = "1.0.0"
 description = "Fast, native Nintendo Switch 1 extractor and converter"
-authors = ["Antigravity"]
+authors = ["SPIN0ZAi <SPIN0ZAi@users.noreply.github.com>"]
 edition = "2024"
 
 [lib]

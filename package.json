@@ -1,5 +1,6 @@
 {
-  "name": "c-usersssolaswitch-extractor-desktop",
+  "name": "switch-1-extractor",
+  "author": "SPIN0ZAi <SPIN0ZAi@users.noreply.github.com>",
   "private": true,
   "version": "0.1.0",
   "type": "module",

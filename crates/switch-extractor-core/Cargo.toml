@@ -2,6 +2,7 @@
 name = "switch-extractor-core"
 version = "0.1.0"
 edition = "2024"
+authors = ["SPIN0ZAi <SPIN0ZAi@users.noreply.github.com>"]
 description = "Core Nintendo Switch container extraction and cryptographic engine in Rust"
 
 [dependencies]
